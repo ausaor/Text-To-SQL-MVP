@@ -66,7 +66,7 @@ Text-To-SQL-MVP/
 1. **克隆仓库**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/abaiar/Text-To-SQL-MVP
 cd Text-To-SQL-MVP
 ```
 
