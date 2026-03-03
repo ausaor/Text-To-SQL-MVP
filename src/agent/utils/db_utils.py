@@ -210,11 +210,12 @@ class MySQLDatabaseManger:
 
 if __name__ == '__main__':
     # 配置数据库连接信息
-    username = 'root'
-    password = 'zjs20060618'
-    host = 'localhost'
-    port = '3306'
-    database = 'zhaojianshuo'
+    import os
+    username = os.getenv("DB_USER", "")
+    password = os.getenv("DB_PASSWORD", "")
+    host = os.getenv("DB_HOST", "localhost")
+    port = os.getenv("DB_PORT", "3306")
+    database = os.getenv("DB_NAME", "")
     connection_string = f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
     
     # 初始化数据库管理器
