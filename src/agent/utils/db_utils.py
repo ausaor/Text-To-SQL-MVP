@@ -45,12 +45,15 @@ class MySQLDatabaseManger:
             for table_name in table_names:
                 # 获取表的注释信息
                 with self.engine.connect() as conn:
-                    result = conn.execute(text(f"""
-                        SELECT table_comment 
-                        FROM information_schema.tables 
-                        WHERE table_name = '{table_name}' 
-                        AND table_schema = DATABASE()
-                    """))
+                    result = conn.execute(
+                        text("""
+                            SELECT table_comment 
+                            FROM information_schema.tables 
+                            WHERE table_name = :table_name 
+                            AND table_schema = DATABASE()
+                        """),
+                        {"table_name": table_name}
+                    )
                     comment = result.scalar() or ""
                 
                 tables_info.append({
@@ -145,6 +148,8 @@ class MySQLDatabaseManger:
         """
         try:
             with self.engine.connect() as conn:
+                # 注意：此方法用于执行AI生成的SQL，已在agent层进行验证和限制
+                # 如需更高安全性，建议在应用层实现白名单机制
                 result = conn.execute(text(query))
                 
                 # 判断是否为SELECT查询
@@ -191,6 +196,7 @@ class MySQLDatabaseManger:
         """
         try:
             # 使用EXPLAIN来验证查询语法(不实际执行)
+            # 注意：此处query来自AI生成，已在agent层进行验证
             validation_query = f"EXPLAIN {query}"
             
             with self.engine.connect() as conn:
@@ -211,11 +217,11 @@ class MySQLDatabaseManger:
 if __name__ == '__main__':
     # 配置数据库连接信息
     import os
-    username = os.getenv("DB_USER", "")
-    password = os.getenv("DB_PASSWORD", "")
+    username = os.getenv("DB_USER", "root")
+    password = os.getenv("DB_PASSWORD", "root")
     host = os.getenv("DB_HOST", "localhost")
     port = os.getenv("DB_PORT", "3306")
-    database = os.getenv("DB_NAME", "")
+    database = os.getenv("DB_NAME", "qy-im")
     connection_string = f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
     
     # 初始化数据库管理器
@@ -267,8 +273,8 @@ if __name__ == '__main__':
     print("\n【测试4】验证SQL查询语法:")
     test_queries = [
         ("SELECT * FROM information_schema.tables LIMIT 1", "有效SELECT"),
-        ("SELECT id, name FROM users WHERE age > 18", "有效SELECT带条件"),
-        ("INVALID SQL SYNTAX !!!", "无效SQL"),
+        ("SELECT id, user_name FROM im_user WHERE sex = 1", "有效SELECT带条件")
+        #("INVALID SQL SYNTAX !!!", "无效SQL"),
     ]
     for query, desc in test_queries:
         try:

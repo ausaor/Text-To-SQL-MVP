@@ -219,11 +219,11 @@ class SQLQueryCheckerTool(BaseTool):
 if __name__ == '__main__':
     # 配置数据库连接
     import os
-    username = os.getenv("DB_USER", "")
-    password = os.getenv("DB_PASSWORD", "")
+    username = os.getenv("DB_USER", "root")
+    password = os.getenv("DB_PASSWORD", "root")
     host = os.getenv("DB_HOST", "localhost")
     port = os.getenv("DB_PORT", "3306")
-    database = os.getenv("DB_NAME", "")
+    database = os.getenv("DB_NAME", "qy-im")
     connection_string = f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
 
     # 初始化数据库管理器和工具
